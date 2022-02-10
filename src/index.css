@@ -1,27 +1,35 @@
-
+html{
+  color: #333333;
+}
 
 .main-box{
   padding: 3%;
-  margin: 5% 33% 0% 33%; 
   display: flex;
   flex-direction: column;
-  width: 20vw;
-  height: 50vh;
+  margin:5% auto 0% auto; 
+  width: 40vh;
   border-radius: 20px;
   border: 3px groove rgb(186, 187, 186); 
-  justify-content: space-evenly;
+  justify-content: space-between;
 }
 
-img{
+apps img{
   height: 5vh;
   width: 5vw;
 }
 
+.dev{
+  width:15vh;
+  margin-bottom: 1vh;
+  padding-top: 2vh;
+}
+
 button{
   padding: 1vh;
+  margin-top: 1vh;
   border-radius: 10px;
   border: 1px groove; 
-  background-color: rgb(31, 167, 245);
+  background-color: #2F80ED;
   color:white;
 }
 
@@ -44,7 +52,7 @@ input{
 
 a{
   text-decoration: none;
-  color: rgb(31, 167, 245);
+  color: #2F80ED;
 }
 
 p{
@@ -55,8 +63,13 @@ p{
 .credits{
   display: flex;
   flex-direction: row;
-  width: 26vw;
+  width: 43vh;
   justify-content: space-between;
-  margin: 0% 33%; 
+  margin:0px auto; 
+}
+
+.app{
+  display: flex;
+  flex-direction: row;
 }
 
