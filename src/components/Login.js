@@ -2,9 +2,12 @@
   width: 98%;
   padding:5% 1%;
 }*/ 
+import React from 'react';
+import { useDispatch } from 'react-redux';
 import { useForm } from "../hooks/useForm";
 
 export const Login = () => {
+  const dispatch = useDispatch();
   const [loginData, handleLoginData] = useForm({
     email: "",
     password: "",
@@ -12,8 +15,10 @@ export const Login = () => {
 
   const { lEmail, lPassword } = loginData;
 
-  const handleLogin=()=>{
-    
+  const handleLogin=(e)=>{
+    e.preventDefault();
+    // Disparar la accion de autenticacion 
+    //dispatch( startLogin( lEmail, lPassword ) );
   }
 
   return (

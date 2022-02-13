@@ -1,4 +1,21 @@
+import React from 'react';
+import { useDispatch } from 'react-redux';
+import { useForm } from "../hooks/useForm";
+
+
 export const Register = () => {
+  const dispatch= useDispatch();
+  const [registerData, handleRegisterData] = useForm({
+    email: "",
+    password: "",
+  });
+
+  const { rEmail, rPassword } = registerData;
+
+  const handleRegister=()=>{
+    // dispatch( startRegister( rEmail, rPassword1, rName ) );
+  }
+  
   return (
     <div className="App">
       <div className="main-box">
@@ -11,12 +28,22 @@ export const Register = () => {
           Master web development by making real-life projects,There are multiple
           paths for you to choose{" "}
         </p>
-        <form>
-          <input type="text" placeholder="Email" className="email"></input>
+        <form onSubmit={handleRegister}>
+        <input
+            type="text"
+            placeholder="Email"
+            className="email"
+            name="rEmail"
+            value={rEmail}
+            onChange={handleRegisterData}
+          ></input>
           <input
             type="text"
             placeholder="Password"
             className="password"
+            name="rPassword"
+            value={rPassword}
+            onChange={handleRegisterData}
           ></input>
           <button className="enter">Start coding now</button>
         </form>
