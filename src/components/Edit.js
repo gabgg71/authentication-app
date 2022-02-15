@@ -1,11 +1,29 @@
 import { Header } from "./Header";
 
 export const Edit=()=>{
+    const openFile =()=>{
+        const inputFile = document.querySelector('.invisible');
+        inputFile.click();
+    }
+    
+    const load =(e)=>{
+        const newPhoto = e.target.files[0];
+        let reader = new FileReader();
+        reader.readAsDataURL(newPhoto);
+        reader.addEventListener('load', (e)=>{
+            document.querySelector('.photo').src = e.currentTarget.result;
+            document.querySelector('.photo2').src = e.currentTarget.result;
+        });
+    }
+
+   
+
+
     return (
         <>
         <div className="App">
         <Header/>
-        <a href="/" className="credits back">BACK</a>
+        <a href="/profile" className="credits back">BACK</a>
         <div className="main-box">
             <b>Change Info</b>
             <p>Changes will be reflected to every service</p>
@@ -15,7 +33,8 @@ export const Edit=()=>{
                  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/Bill_Gates_-_Nov._8%2C_2019.jpg/640px-Bill_Gates_-_Nov._8%2C_2019.jpg" className="photo"></img>
                 </div>
                 </div>
-                <a href="" className="change">CHANGE PHOTO</a>
+                <input className="invisible" type="file" onChange={load}></input> 
+                <a className="change" onClick={openFile}>CHANGE PHOTO</a>
             </div>
             <form>
             <p>Name</p>

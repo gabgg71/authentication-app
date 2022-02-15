@@ -1,6 +1,9 @@
 import { Header } from "./Header";
 
 export const Profile=({photo, name, bio, phone, email, password})=>{
+    const toEdit=()=>{
+        window.location.href ='/edit';
+    }
     return (
         <>
         <div className="App">
@@ -13,7 +16,7 @@ export const Profile=({photo, name, bio, phone, email, password})=>{
                     <b>Profile</b>
                     <p className='grey'>Some info may be visible to other people</p>
                 </div>
-                <button className = "edit">Edit</button>
+                <button className = "edit" onClick={toEdit}>Edit</button>
             </div>
             <div className="general">
                 <div className="primero">

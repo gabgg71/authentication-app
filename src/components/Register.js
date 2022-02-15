@@ -1,5 +1,6 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
+import { startRegister } from '../actions/auth';
 import { useForm } from "../hooks/useForm";
 
 
@@ -13,7 +14,7 @@ export const Register = () => {
   const { rEmail, rPassword } = registerData;
 
   const handleRegister=()=>{
-    // dispatch( startRegister( rEmail, rPassword1, rName ) );
+    dispatch( startRegister( rEmail, rPassword));
   }
   
   return (
@@ -21,14 +22,14 @@ export const Register = () => {
       <div className="main-box">
         <img
           src="https://raw.githubusercontent.com/gabgg71/authentication-app/3897732eb8c9560fc203f2586355c311a46623f6/public/devchallenges.svg"
-          className="dev"
+          className="dev" alt='alt'
         ></img>
         <b className="join">Join thousands of learners from around the world</b>
         <p>
           Master web development by making real-life projects,There are multiple
           paths for you to choose{" "}
         </p>
-        <form onSubmit={handleRegister}>
+        <form>
         <input
             type="text"
             placeholder="Email"
@@ -45,7 +46,7 @@ export const Register = () => {
             value={rPassword}
             onChange={handleRegisterData}
           ></input>
-          <button className="enter">Start coding now</button>
+          <button className="enter" onClick={handleRegister}>Start coding now</button>
         </form>
         <p className="grey">or continue with these social profile</p>
         <div className="apps">
@@ -63,7 +64,7 @@ export const Register = () => {
           ></img>
         </div>
         <p className="grey">
-          Already a member? <a href="">Login</a>
+          Already a member? <a href="/login">Login</a>
         </p>
       </div>
       <div className="credits">

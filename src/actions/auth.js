@@ -11,11 +11,10 @@ export const startLogin = ( email, password ) => {
         if( body.ok ) {
             localStorage.setItem('token', body.token );
             localStorage.setItem('token-init-date', new Date().getTime() );
-
             dispatch( login({
-                uid: body.uid,
-                name: body.name
-            }) )
+                uid: body.uid
+            }) );
+            window.location.href='/profile';
         } else {
             Swal.fire('Error', body.msg, 'error');
         }
@@ -33,15 +32,15 @@ export const startRegister = ( email, password, name ) => {
         if( body.ok ) {
             localStorage.setItem('token', body.token );
             localStorage.setItem('token-init-date', new Date().getTime() );
-
+            console.log(body.uid);
             dispatch( login({
-                uid: body.uid,
-                name: body.name
+                uid: body.uid
             }) )
+            window.location.href='/profile';
         } else {
             Swal.fire('Error', body.msg, 'error');
         }
-
+        window.location.href='/register';
 
     }
 }

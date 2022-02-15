@@ -52,6 +52,7 @@ html{
   border-radius: 10px;
   width: 7vh;
   height: 7vh;
+  object-fit: cover;
 }
 
 .dev{
@@ -128,6 +129,9 @@ i{
   border-radius: 10px;
   border: 1px solid #828282;
   z-index:10;
+}
+.invisible{
+  display: none;
 }
 
 form{

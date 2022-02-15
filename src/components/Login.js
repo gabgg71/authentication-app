@@ -4,6 +4,7 @@
 }*/ 
 import React from 'react';
 import { useDispatch } from 'react-redux';
+import { startLogin } from '../actions/auth';
 import { useForm } from "../hooks/useForm";
 
 export const Login = () => {
@@ -18,7 +19,7 @@ export const Login = () => {
   const handleLogin=(e)=>{
     e.preventDefault();
     // Disparar la accion de autenticacion 
-    //dispatch( startLogin( lEmail, lPassword ) );
+    dispatch( startLogin( lEmail, lPassword ) );
   }
 
   return (
@@ -64,7 +65,7 @@ export const Login = () => {
           ></img>
         </div>
         <p className="grey">
-          Dont you have an account yet? <a href="">Register</a>
+          Dont you have an account yet? <a href="/register">Register</a>
         </p>
       </div>
       <div className="credits">
