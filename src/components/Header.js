@@ -1,10 +1,11 @@
+import { getSpaceUntilMaxLength } from "@testing-library/user-event/dist/utils";
 import React, { useState } from "react";
-export const Header = () => {
+export const Header = ({imagen}) => {
   const [open, setOpen] = useState(false);
-
 
   const display=()=>{
       setOpen(!open);
+      
   }
   return (
     <div className="header">
@@ -14,7 +15,7 @@ export const Header = () => {
       ></img>
       <div className="padre">
         <div className="basic">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/Bill_Gates_-_Nov._8%2C_2019.jpg/640px-Bill_Gates_-_Nov._8%2C_2019.jpg" alt="profilePhoto" className="photo2"></img>
+          <img src={imagen} alt="profilePhoto" className="photo2"></img>
           <p>Bill Gates</p>
           <i className="material-icons" onClick={display}>arrow_drop_down</i>
         </div>

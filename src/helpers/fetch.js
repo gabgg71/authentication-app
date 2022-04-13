@@ -6,6 +6,7 @@ const fetchSinToken = ( endpoint, data, method = 'GET' ) => {
     if ( method === 'GET' ) {
         return fetch( url );
     } else {
+        console.log(data);
         return fetch( url, {
             method,
             headers: {
@@ -15,6 +16,7 @@ const fetchSinToken = ( endpoint, data, method = 'GET' ) => {
         });
     }
 }
+
 
 const fetchConToken = ( endpoint, data, method = 'GET' ) => {
 

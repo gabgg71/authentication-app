@@ -2,25 +2,62 @@
   width: 98%;
   padding:5% 1%;
 }*/ 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { startLogin } from '../actions/auth';
+import { fetchSinToken } from '../helpers/fetch';
 import { useForm } from "../hooks/useForm";
+import { useSearchParams } from "react-router-dom";
+
+
 
 export const Login = () => {
   const dispatch = useDispatch();
+  let [searchParams, setSearchParams] = useSearchParams();
   const [loginData, handleLoginData] = useForm({
     email: "",
     password: "",
   });
 
+  window.addEventListener('load', (event) => {
+    setSearchParams(window.location.href);
+    if(searchParams.get('code') !== null){
+      console.log(searchParams.get('code'));
+      let codigo = searchParams.get('code');
+      fetchSinToken('auth/google-confirm2', {'code':codigo}, 'POST');
+    }
+  });
+
+  
+  
+  
   const { lEmail, lPassword } = loginData;
+  
 
   const handleLogin=(e)=>{
     e.preventDefault();
     // Disparar la accion de autenticacion 
     dispatch( startLogin( lEmail, lPassword ) );
   }
+
+  const loginGoogle=async()=>{
+    console.log('Presionaste google');
+    let resp = await fetchSinToken('auth/url-google');
+    const body = await resp.json();
+    window.location.href =body.url;
+
+  }
+
+  useEffect(() => {
+    return () => {
+      window.removeEventListener('load', (event) => {
+        setSearchParams(window.location.href);
+        if(searchParams.get('code') !== null){
+          console.log(searchParams.get('code'));
+        }
+      });
+    }
+  }, [searchParams, setSearchParams]);
 
   return (
     <div className="App">
@@ -51,7 +88,7 @@ export const Login = () => {
         </form>
         <p className="grey">or continue with these social profile</p>
         <div className="apps">
-          <img
+          <img onClick={loginGoogle}
             src="https://raw.githubusercontent.com/gabgg71/authentication-app/3897732eb8c9560fc203f2586355c311a46623f6/public/Google.svg"
             alt="google"
           ></img>

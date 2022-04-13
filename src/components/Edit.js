@@ -22,7 +22,7 @@ export const Edit=()=>{
     return (
         <>
         <div className="App">
-        <Header/>
+        <Header imagen={"https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/Bill_Gates_-_Nov._8%2C_2019.jpg/640px-Bill_Gates_-_Nov._8%2C_2019.jpg"}/>
         <a href="/profile" className="credits back">BACK</a>
         <div className="main-box">
             <b>Change Info</b>
@@ -36,7 +36,7 @@ export const Edit=()=>{
                 <input className="invisible" type="file" onChange={load}></input> 
                 <a className="change" onClick={openFile}>CHANGE PHOTO</a>
             </div>
-            <form>
+            <form className="form-edit">
             <p>Name</p>
             <input type="text" placeholder="Enter your name"></input>
             <p>Bio</p>

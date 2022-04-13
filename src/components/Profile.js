@@ -7,7 +7,7 @@ export const Profile=({photo, name, bio, phone, email, password})=>{
     return (
         <>
         <div className="App">
-        <Header/>
+        <Header imagen={"https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/Bill_Gates_-_Nov._8%2C_2019.jpg/640px-Bill_Gates_-_Nov._8%2C_2019.jpg"}/>
           <div className='info'>
             <h1>Personal info</h1>
             <h2>Basic info, like your name and photo</h2> 

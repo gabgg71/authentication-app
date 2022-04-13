@@ -224,6 +224,11 @@ b{
   background: url(https://raw.githubusercontent.com/gabgg71/authentication-app/87c83002f9531b4695baa86ae9272e5562b2b5f7/public/lock.svg) no-repeat left 10px center;
   
 }
+.form-edit input{
+  padding: 1.2vh 1.2vh 1.2vh 1.1vh;
+
+}
+
 input{
   border-radius: 7px;
   padding: 1.2vh;
