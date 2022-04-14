@@ -4,15 +4,17 @@ import { useDispatch } from 'react-redux';
 import { loadDataS} from '../actions/auth';
 import { useForm } from "../hooks/useForm";
 import {store} from '../store/store.js';
+import { setInfo } from '../actions/info';
 
 export const Edit=()=>{
     const dispatch = useDispatch();
     let [user, setUser] = useState(JSON.parse(localStorage.getItem('user')));
     const [userData, handleData] = useForm({
-        ...user
+        ...user,
+        password: ""
     });
 
-    const {dName, dBio, dPhone, dEmail,  dPassword} = userData;
+    const {name, bio, phone, email,  password} = userData;
 
     window.addEventListener('load', (event) => {
         dispatch( loadDataS(user) );
@@ -35,10 +37,9 @@ export const Edit=()=>{
     }
 
     const saveInfo=()=>{
-        console.log(userData);
-        setTimeout(() => {
-            
-        }, 2000);
+        userData.password = user.password;
+        dispatch( setInfo (userData));
+        
     }
     
     const load =(e)=>{
@@ -71,24 +72,23 @@ export const Edit=()=>{
                 <input className="invisible" type="file" onChange={load}></input> 
                 <a className="change" onClick={openFile}>CHANGE PHOTO</a>
             </div>
-            <form className="form-edit">
             <p>Name</p>
-            <input type="text" placeholder="Enter your name" name="dName"
-            value={dName} ></input>
+            <input type="text" placeholder="Enter your name" name="name"
+            value={name} onChange={handleData}></input>
             <p>Bio</p>
-            <textarea id="w3review" rows="6"  placeholder="Enter your bio" className="bio" name="dBio"  value={dBio}>
+            <textarea id="w3review" rows="6"  onChange={handleData} placeholder="Enter your bio" className="bio" name="bio"  value={bio}>
 </textarea>
             <p>Phone</p>
-            <input type="text" placeholder="Enter your phone" name="dPhone"
-            value={dPhone}></input>
+            <input type="text" placeholder="Enter your phone" name="phone"
+            value={phone} onChange={handleData}></input>
             <p>Email</p>
-            <input type="text" placeholder="Enter your email" name="dEmail"
-            value={dEmail} ></input>
+            <input type="text" placeholder="Enter your email" name="email"
+            value={email} onChange={handleData}></input>
             <p>Password</p>
-            <input type="text" placeholder="Enter your password" name="dPassword"
-            value={dPassword}></input>
+            <input type="text" placeholder="Enter your password" name="password"
+            value={password} onChange={handleData}></input>
             <button className="enter save" onClick={saveInfo}>Save</button>
-            </form>
+   
         </div>
         <div className='credits'>
             <p className='grey'>created by Gabriela Galindo</p>

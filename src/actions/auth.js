@@ -20,9 +20,6 @@ export const startLogin = ( email, password ) => {
                 body.user
             ) );
             localStorage.setItem('user', JSON.stringify(store.getState().info));
-            console.log(store.getState().info);
-            console.log(`lo que guarde en storage ${localStorage.getItem('user')}`);
-            console.log(`ahora en json: ${JSON.parse(localStorage.getItem('user'))}`)
             window.location.href='/profile';
         } else {
             Swal.fire('Error', body.msg, 'error');

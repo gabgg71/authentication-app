@@ -1,23 +1,28 @@
 import { fetchSinToken, fetchConToken } from '../helpers/fetch';
 import { types } from '../types/types';
+import { loadDataS} from '../actions/auth';
 import Swal from 'sweetalert2';
+import {store} from '../store/store.js';
 
 
-export const setImage=(img)=>{
+export const setInfo=(user)=>{
     return async( dispatch ) => {
-        //subirla a cloudinary
-        //subir la url a la base de datos
-        //actualizar url en gestor de estado
-        const resp = await fetchSinToken('auth', { email, password }, 'POST' );
+        const resp = await fetchSinToken('edit', user, 'PUT' );
         const body = await resp.json();
+        localStorage.setItem('resp', JSON.stringify(body));
+        if( body.ok ) {
+        dispatch( loadDataS(user) );
+        localStorage.setItem('user', JSON.stringify(store.getState().info));
+        window.location.href='/profile';
+        }else{
+            Swal.fire('Error', body.msg, 'error');
+        }
+
+
     }
 }
 
-export const setName=(name)=>{
-    return async( dispatch ) => {
-        //subir la url a la base de datos
-        //actualizar url en gestor de estado
-        const resp = await fetchSinToken('auth', { email, password }, 'POST' );
-        const body = await resp.json();
-    }
+export const setImage=()=>{
+    //subirla a cloudinary
+    //enviar user con la nueva url a la funcion de arriba
 }
