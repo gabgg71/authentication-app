@@ -2,24 +2,35 @@
   width: 98%;
   padding:5% 1%;
 }*/ 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { startLogin } from '../actions/auth';
 import { fetchSinToken } from '../helpers/fetch';
 import { useForm } from "../hooks/useForm";
 import { useSearchParams } from "react-router-dom";
+import {store} from '../store/store.js';
 
 
 
 export const Login = () => {
+
+  let [user, setUser] = useState(store.getState().info.name);
+    
+
+  store.subscribe(() => {
+      setUser({
+        user: store.getState().user
+      });
+    });
   const dispatch = useDispatch();
   let [searchParams, setSearchParams] = useSearchParams();
   const [loginData, handleLoginData] = useForm({
     email: "",
     password: "",
   });
-
+  
   window.addEventListener('load', (event) => {
+    console.log(`usuario actual ${user}`);
     setSearchParams(window.location.href);
     if(searchParams.get('code') !== null){
       console.log(searchParams.get('code'));
@@ -33,7 +44,7 @@ export const Login = () => {
   
   const { lEmail, lPassword } = loginData;
   
-
+  
   const handleLogin=(e)=>{
     e.preventDefault();
     // Disparar la accion de autenticacion 
@@ -47,6 +58,7 @@ export const Login = () => {
     window.location.href =body.url;
 
   }
+
 
   useEffect(() => {
     return () => {

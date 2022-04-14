@@ -10,6 +10,7 @@ export const authReducer = ( state = initialState, action ) => {
     switch ( action.type ) {
         
         case types.authLogin:
+            console.log(`se loguea recibo ${action.payload}`);
             return {
                 ...state,
                 ...action.payload,
