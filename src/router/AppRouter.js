@@ -10,7 +10,7 @@ export const AppRouter = () => {
     <Router>
       <div>
         <Routes>
-          <Route exact path="/" element={(!!localStorage.getItem('token') ? <Login/> : <Login />)} />
+          <Route exact path="/" element={(!!localStorage.getItem('token') ? <Profile/> : <Login />)} />
           <Route exact path="/login" element={<Login />} />
           <Route exact path="/register" element={<Register />} />
           <Route exact path="/profile" element={(!!localStorage.getItem('token') ? <Profile /> : <Login />)} />

@@ -1,4 +1,4 @@
-import { fetchSinToken, fetchConToken } from '../helpers/fetch';
+import { fetchSinToken, fetchConToken, fetchImage } from '../helpers/fetch';
 import { types } from '../types/types';
 import { loadDataS} from '../actions/auth';
 import Swal from 'sweetalert2';
@@ -22,7 +22,12 @@ export const setInfo=(user)=>{
     }
 }
 
-export const setImage=()=>{
+export const setImage=(image)=>{
     //subirla a cloudinary
     //enviar user con la nueva url a la funcion de arriba
+    return async( dispatch ) => {
+    console.log(`recibo ${image}`);
+    const resp = await fetchImage('edit/photo',image, 'POST' );
+    console.log(resp.body);
+    }
 }

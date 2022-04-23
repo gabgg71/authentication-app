@@ -17,6 +17,24 @@ const fetchSinToken = ( endpoint, data, method = 'GET' ) => {
     }
 }
 
+const fetchImage = ( endpoint, data, method = 'GET' ) => {
+    const url = `${ baseUrl }/${ endpoint }`;
+
+    if ( method === 'GET' ) {
+        return fetch( url );
+    } else {
+        console.log(data);
+        return fetch( url, {
+            method,
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: data
+        });
+    }
+    
+}
+
 
 const fetchConToken = ( endpoint, data, method = 'GET' ) => {
 
@@ -46,5 +64,6 @@ const fetchConToken = ( endpoint, data, method = 'GET' ) => {
 
 export {
     fetchSinToken,
-    fetchConToken
+    fetchConToken,
+    fetchImage
 }

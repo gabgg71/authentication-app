@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import { loadDataS} from '../actions/auth';
 import { useForm } from "../hooks/useForm";
 import {store} from '../store/store.js';
-import { setInfo } from '../actions/info';
+import { setInfo,setImage } from '../actions/info';
 
 export const Edit=()=>{
     const dispatch = useDispatch();
@@ -15,7 +15,7 @@ export const Edit=()=>{
     });
 
     const {name, bio, phone, email,  password} = userData;
-
+  
     window.addEventListener('load', (event) => {
         dispatch( loadDataS(user) );
       });
@@ -39,20 +39,24 @@ export const Edit=()=>{
     const saveInfo=()=>{
         userData.password = user.password;
         dispatch( setInfo (userData));
-        
-    }
-    
-    const load =(e)=>{
-        const newPhoto = e.target.files[0];
-        let reader = new FileReader();
-        reader.readAsDataURL(newPhoto);
-        reader.addEventListener('load', (e)=>{
-            document.querySelector('.photo').src = e.currentTarget.result;
-            document.querySelector('.photo2').src = e.currentTarget.result;
-        });
     }
 
-   //value={(user.phone == "sin definir")?(""):(user.phone)}
+    //cambio de imagen     
+    const load =(e)=>{
+        let formData = new FormData();
+        formData.append("image", e.target.files[0]);
+        console.log(formData);
+        console.log("lo hago")
+        dispatch(setImage(formData));
+        /*let reader = new FileReader();
+        reader.readAsDataURL(newPhoto);
+        reader.addEventListener('load', (e)=>{
+           // document.querySelector('.photo').src = e.currentTarget.result;
+           // document.querySelector('.photo2').src = e.currentTarget.result;
+        });*/
+    }
+
+
 
 
     return (
