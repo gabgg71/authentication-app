@@ -2,19 +2,42 @@
   width: 98%;
   padding:5% 1%;
 }*/ 
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { startLogin } from '../actions/auth';
+import { startLogin, startLoginGoogle, startRegisterGoogle } from '../actions/auth';
 import { fetchSinToken } from '../helpers/fetch';
 import { useForm } from "../hooks/useForm";
 import { useSearchParams } from "react-router-dom";
 import {store} from '../store/store.js';
+import { useNavigate } from 'react-router-dom';
+import { userContext } from '../hooks/userContext';
+import Swal from 'sweetalert2';
 
 
 
 export const Login = () => {
-
   let [user, setUser] = useState(store.getState().info.name);
+  const navigate = useNavigate();
+  const { setPermitir } = useContext(userContext);
+
+  useEffect(async() => {
+    setSearchParams(window.location.href);
+    if(searchParams.get('code') !== null){
+      let tipo = localStorage.getItem('type');
+      let codigo = searchParams.get('code');
+      let respuesta = await fetchSinToken('auth/google-confirm', {'code':codigo, type: tipo}, 'POST');
+      let salida= await respuesta.json();
+      let body = salida.resp;
+      if(body.token){
+        dispatch( startLoginGoogle( body.user, body.uid, body.token) )
+        setPermitir(true);
+        navigate('/profile');
+      }else {
+        Swal.fire('Error', body.msg || body, 'error');
+    }
+    }
+  }, []);
+
     
 
   store.subscribe(() => {
@@ -29,17 +52,7 @@ export const Login = () => {
     password: "",
   });
   
-  window.addEventListener('load', (event) => {
-    console.log(`usuario actual ${user}`);
-    setSearchParams(window.location.href);
-    if(searchParams.get('code') !== null){
-      console.log(searchParams.get('code'));
-      let codigo = searchParams.get('code');
-      fetchSinToken('auth/google-confirm2', {'code':codigo}, 'POST');
-    }
-  });
 
-  
   
   
   const { lEmail, lPassword } = loginData;
@@ -47,29 +60,25 @@ export const Login = () => {
   
   const handleLogin=(e)=>{
     e.preventDefault();
-    // Disparar la accion de autenticacion 
-    dispatch( startLogin( lEmail, lPassword ) );
+    dispatch(startLogin( lEmail, lPassword )).then((resp)=>{
+      if(resp && resp.payload.token){
+        setPermitir(true);
+        navigate('/profile');
+      }
+    });
+    
+    
   }
 
   const loginGoogle=async()=>{
-    console.log('Presionaste google');
     let resp = await fetchSinToken('auth/url-google');
     const body = await resp.json();
+    localStorage.setItem('type', "login");
     window.location.href =body.url;
-
   }
 
 
-  useEffect(() => {
-    return () => {
-      window.removeEventListener('load', (event) => {
-        setSearchParams(window.location.href);
-        if(searchParams.get('code') !== null){
-          console.log(searchParams.get('code'));
-        }
-      });
-    }
-  }, [searchParams, setSearchParams]);
+ 
 
   return (
     <div className="App">
@@ -83,15 +92,15 @@ export const Login = () => {
           <input
             type="text"
             placeholder="Email"
-            className="email"
+            className="inp-log email"
             name="lEmail"
             value={lEmail}
             onChange={handleLoginData}
           ></input>
           <input
-            type="text"
+            type="password"
             placeholder="Password"
-            className="password"
+            className="inp-log password"
             name="lPassword"
             value={lPassword}
             onChange={handleLoginData}
@@ -103,10 +112,6 @@ export const Login = () => {
           <img onClick={loginGoogle}
             src="https://raw.githubusercontent.com/gabgg71/authentication-app/3897732eb8c9560fc203f2586355c311a46623f6/public/Google.svg"
             alt="google"
-          ></img>
-          <img
-            src="https://raw.githubusercontent.com/gabgg71/authentication-app/3897732eb8c9560fc203f2586355c311a46623f6/public/Facebook.svg"
-            alt="facebook"
           ></img>
           <img
             src="https://raw.githubusercontent.com/gabgg71/authentication-app/3897732eb8c9560fc203f2586355c311a46623f6/public/Gihub.svg"
@@ -124,3 +129,4 @@ export const Login = () => {
     </div>
   );
 };
+

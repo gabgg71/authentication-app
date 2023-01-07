@@ -6,7 +6,6 @@ const fetchSinToken = ( endpoint, data, method = 'GET' ) => {
     if ( method === 'GET' ) {
         return fetch( url );
     } else {
-        console.log(data);
         return fetch( url, {
             method,
             headers: {
@@ -23,7 +22,6 @@ const fetchImage = ( endpoint, data, method = 'GET' ) => {
     if ( method === 'GET' ) {
         return fetch( url );
     } else {
-        console.log(data);
         return fetch( url, {
             method,
             headers: {

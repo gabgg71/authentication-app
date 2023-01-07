@@ -1,20 +1,50 @@
-import React from 'react';
+import React, {useContext, useEffect} from 'react';
 import { useDispatch } from 'react-redux';
 import { startRegister } from '../actions/auth';
 import { useForm } from "../hooks/useForm";
+import { userContext } from '../hooks/userContext';
+import { useNavigate } from 'react-router-dom';
+import { useSearchParams } from "react-router-dom";
+import { fetchSinToken } from '../helpers/fetch';
 
 
 export const Register = () => {
-  const dispatch= useDispatch();
+  let [searchParams, setSearchParams] = useSearchParams();
   const [registerData, handleRegisterData] = useForm({
     email: "",
     password: "",
   });
+  const { setPermitir } = useContext(userContext);
+  const dispatch= useDispatch();
+  const navigate = useNavigate();
 
   const { rEmail, rPassword } = registerData;
 
+  useEffect(async() => {
+    setSearchParams(window.location.href);
+    if(searchParams.get('code') !== null){
+      let codigo = searchParams.get('code');
+      await fetchSinToken('auth/google-confirm', {'code':codigo, type: "register"}, 'POST');
+    }
+  }, []);
+
+
+
   const handleRegister=()=>{
-    dispatch( startRegister( rEmail, rPassword));
+    dispatch(startRegister( rEmail, rPassword ) ).then((resp)=>{
+      if(resp && resp.payload.token){
+        setPermitir(true);
+        navigate('/profile');
+      }
+    });
+  }
+
+  const registerGoogle=async()=>{
+    let resp = await fetchSinToken('auth/url-google');
+    const body = await resp.json();
+    localStorage.setItem('type', "register");
+    window.location.href =body.url;
+
   }
   
   return (
@@ -33,15 +63,15 @@ export const Register = () => {
         <input
             type="text"
             placeholder="Email"
-            className="email"
+            className="inp-log email"
             name="rEmail"
             value={rEmail}
             onChange={handleRegisterData}
           ></input>
           <input
-            type="text"
+            type="password"
             placeholder="Password"
-            className="password"
+            className="inp-log password"
             name="rPassword"
             value={rPassword}
             onChange={handleRegisterData}
@@ -49,14 +79,10 @@ export const Register = () => {
           <button className="enter" onClick={handleRegister}>Start coding now</button>
         </form>
         <p className="grey">or continue with these social profile</p>
-        <div className="apps">
+        <div className="apps" onClick={registerGoogle}>
           <img
             src="https://raw.githubusercontent.com/gabgg71/authentication-app/3897732eb8c9560fc203f2586355c311a46623f6/public/Google.svg"
             alt="google"
-          ></img>
-          <img
-            src="https://raw.githubusercontent.com/gabgg71/authentication-app/3897732eb8c9560fc203f2586355c311a46623f6/public/Facebook.svg"
-            alt="facebook"
           ></img>
           <img
             src="https://raw.githubusercontent.com/gabgg71/authentication-app/3897732eb8c9560fc203f2586355c311a46623f6/public/Gihub.svg"
@@ -64,7 +90,7 @@ export const Register = () => {
           ></img>
         </div>
         <p className="grey">
-          Already a member? <a href="/login">Login</a>
+          Already a member? <a href="/">Login</a>
         </p>
       </div>
       <div className="credits">

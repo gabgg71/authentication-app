@@ -1,24 +1,32 @@
 import React, { useState } from 'react';
 import { Header } from "./Header";
 import { useDispatch } from 'react-redux';
-import { loadDataS} from '../actions/auth';
 import { useForm } from "../hooks/useForm";
 import {store} from '../store/store.js';
-import { setInfo,setImage } from '../actions/info';
+import { setInfo} from '../actions/info';
+import { useNavigate } from 'react-router-dom';
+import { fetchSinToken } from '../helpers/fetch';
+import { Spin } from 'antd';
 
 export const Edit=()=>{
-    const dispatch = useDispatch();
-    let [user, setUser] = useState(JSON.parse(localStorage.getItem('user')));
+    let [user, setUser] = useState(store.getState().info);
+    const [imageUrl, setImageUrl] = useState(null);
+    const [success, setSuccess] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [confirm, setConfirm] = useState(false);
     const [userData, handleData] = useForm({
         ...user,
-        password: ""
+        password: undefined, 
+        confirmation_pass: ""
     });
-
-    const {name, bio, phone, email,  password} = userData;
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    
+    const {name, bio, phone, email,  password, confirmation_pass} = userData;
   
-    window.addEventListener('load', (event) => {
+    /*window.addEventListener('load', (event) => {
         dispatch( loadDataS(user) );
-      });
+    });*/
 
     store.subscribe(() => {
     setUser(
@@ -26,71 +34,122 @@ export const Edit=()=>{
     );
     });
 
-    const toProfile=()=>{
-        localStorage.setItem('user', JSON.stringify(store.getState().info));
-        window.location.href ='/profile';
-    }
-
     const openFile =()=>{
         const inputFile = document.querySelector('.invisible');
         inputFile.click();
     }
 
-    const saveInfo=()=>{
-        userData.password = user.password;
-        dispatch( setInfo (userData));
+    const hazlo=async()=>{
+        setLoading(true);
+        if(imageUrl){
+            let url = await subirImagen();
+            userData.img = url;
+        }
+        dispatch( setInfo (userData)).then((resp)=>{
+            setImageUrl(null);
+            setLoading(false);
+            setSuccess(true);
+        });
+
     }
+
+    const saveInfo=async()=>{
+        if(password === ""){
+            userData.password = user.password;
+            await hazlo();
+            return ;
+        }
+        //case user want to stablish password but he/she was register with google
+        if(password !== "" && user.password === undefined){
+            await hazlo();
+            return ;
+        }
+        if(!confirm){
+            setConfirm(true);
+        }
+        if(confirm && confirmation_pass !== ""){
+            //validamos 
+            let respuesta = await fetchSinToken('edit/validation', {'email':user.email, password: confirmation_pass}, 'PUT');
+            let resp = await respuesta.json();
+            console.log(JSON.stringify(resp))
+            if(resp.correct){
+                await hazlo();
+                setConfirm(false);
+                console.log("Cambie la contrasena")
+            }
+        
+        
+    }}
 
     //cambio de imagen     
-    const load =(e)=>{
-        let formData = new FormData();
-        formData.append("image", e.target.files[0]);
-        console.log(formData);
-        console.log("lo hago")
-        dispatch(setImage(formData));
-        /*let reader = new FileReader();
-        reader.readAsDataURL(newPhoto);
-        reader.addEventListener('load', (e)=>{
-           // document.querySelector('.photo').src = e.currentTarget.result;
-           // document.querySelector('.photo2').src = e.currentTarget.result;
-        });*/
+    const load =async(e)=>{
+        let image = e.target.files[0];
+        const reader = new FileReader();
+        reader.onloadend = () => {
+        setImageUrl(reader.result);
+        };
+        reader.readAsDataURL(image);
     }
 
-
-
+    const subirImagen =async()=>{
+        const formData = new FormData();
+        formData.append('file', imageUrl);
+        formData.append('upload_preset', process.env.REACT_APP_UPLOAD_PRESET);
+        try {
+            const res = await fetch( process.env.REACT_APP_CLOUDINARY_URL, {
+                method: "POST",
+                body: formData
+            });
+            const resp = await res.json();
+            return resp.secure_url;
+        } catch (err) {
+            console.error(`error ${err}`);
+        }
+    }
 
     return (
         <>
         <div className="App">
-        <Header imagen={"https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/Bill_Gates_-_Nov._8%2C_2019.jpg/640px-Bill_Gates_-_Nov._8%2C_2019.jpg"}/>
-        <a onClick={toProfile} className="credits back">BACK</a>
+        <Header/>
+        <button onClick={()=>{navigate('/profile', { replace: true });}} className="credits back">BACK</button>
         <div className="main-box">
             <b>Change Info</b>
             <p>Changes will be reflected to every service</p>
             <div className="inline">
                 <div className="editImage">
                 <div className="photoI">
-                 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/Bill_Gates_-_Nov._8%2C_2019.jpg/640px-Bill_Gates_-_Nov._8%2C_2019.jpg" className="photo"></img>
+                 <img src={imageUrl || user.img || "https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/Bill_Gates_-_Nov._8%2C_2019.jpg/640px-Bill_Gates_-_Nov._8%2C_2019.jpg"} className="photo"></img>
                 </div>
                 </div>
-                <input className="invisible" type="file" onChange={load}></input> 
+                <input className="invisible inp-edit" type="file" onChange={load}></input> 
                 <a className="change" onClick={openFile}>CHANGE PHOTO</a>
             </div>
             <p>Name</p>
-            <input type="text" placeholder="Enter your name" name="name"
+            <input type="text" className='inp-edit' placeholder="Enter your name" name="name"
             value={name} onChange={handleData}></input>
             <p>Bio</p>
-            <textarea id="w3review" rows="6"  onChange={handleData} placeholder="Enter your bio" className="bio" name="bio"  value={bio}>
+            <textarea id="w3review" rows="6"  onChange={handleData} placeholder="Enter your bio" className="bio inp-edit" name="bio"  value={bio}>
 </textarea>
             <p>Phone</p>
-            <input type="text" placeholder="Enter your phone" name="phone"
+            <input type="text" className='inp-edit' placeholder="Enter your phone" name="phone"
             value={phone} onChange={handleData}></input>
             <p>Email</p>
-            <input type="text" placeholder="Enter your email" name="email"
+            <input type="text" className='inp-edit' placeholder="Enter your email" name="email"
             value={email} onChange={handleData}></input>
             <p>Password</p>
-            <input type="text" placeholder="Enter your password" name="password"
+            <input type="password" className='inp-edit' placeholder="New password" name="password" 
             value={password} onChange={handleData}></input>
+            {confirm &&
+            <>
+                <p>When you want to change your password, you must confirm the current one.</p>
+                <input type="password" className='inp-edit' placeholder="Current password"
+                name='confirmation_pass' value={confirmation_pass} onChange={handleData}></input>
+            </>}
+            {loading && <Spin className="spin" size="large"/>}
+            {success &&
+            <div className='success'>
+            <p>El cambio ha sido exitoso</p>
+          </div>}
             <button className="enter save" onClick={saveInfo}>Save</button>
    
         </div>
@@ -98,6 +157,7 @@ export const Edit=()=>{
             <p className='grey'>created by Gabriela Galindo</p>
             <p className='grey'>devChallengues.io</p>
           </div>
+          
          </div>
            
         </>
