@@ -1,20 +1,16 @@
 import React, { useState } from 'react';
 import { Header } from "./Header";
-import { useDispatch } from 'react-redux';
-import { loadDataS} from '../actions/auth';
 import {store} from '../store/store.js';
 import { useNavigate } from 'react-router-dom';
 
 export const Profile=()=>{
-    const dispatch = useDispatch();
     const navigate = useNavigate();
     let [user, _] = useState(store.getState().info);
+    let imagen = undefined
+    if(user.img !== ""){
+        imagen = user.img;
+    }
 
-    
-
-    window.addEventListener('load', (event) => {
-        dispatch( loadDataS(user) );
-      });
 
     
     return (
@@ -33,7 +29,7 @@ export const Profile=()=>{
             </div>
             <div className="general">
                 <p className="key">PHOTO</p>
-                <img src={user.img || "https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/Bill_Gates_-_Nov._8%2C_2019.jpg/640px-Bill_Gates_-_Nov._8%2C_2019.jpg"} alt="me" className="photo"></img>
+                <img src={(user.img !== "" && user.img) || process.env.REACT_APP_PREDEFINED} alt="me" className="photo"></img>
             </div>
             <div className="general">
                     <p className="key">NAME</p>
@@ -53,7 +49,7 @@ export const Profile=()=>{
             </div>
             <div className="general end">
                     <p className="key">PASSWORD</p>
-                <p className="text-info">Bill Gates</p>
+                <p className="text-info">*********************</p>
             </div>
            </div>
         </div>

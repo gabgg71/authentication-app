@@ -118,7 +118,7 @@ export const Edit=()=>{
             <div className="inline">
                 <div className="editImage">
                 <div className="photoI">
-                 <img src={imageUrl || user.img || "https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/Bill_Gates_-_Nov._8%2C_2019.jpg/640px-Bill_Gates_-_Nov._8%2C_2019.jpg"} className="photo"></img>
+                 <img src={imageUrl || user.img || process.env.REACT_APP_PREDEFINED} className="photo"></img>
                 </div>
                 </div>
                 <input className="invisible inp-edit" type="file" onChange={load}></input> 
