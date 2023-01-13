@@ -23,9 +23,14 @@ export const Login = () => {
   useEffect(async() => {
     setSearchParams(window.location.href);
     if(searchParams.get('code') !== null){
-      let tipo = localStorage.getItem('type');
       let codigo = searchParams.get('code');
-      let respuesta = await fetchSinToken('auth/google-confirm', {'code':codigo, type: tipo}, 'POST');
+      let tipo = localStorage.getItem('type');
+      let respuesta = undefined
+      if(localStorage.getItem('auth') === "google"){
+        respuesta = await fetchSinToken('auth/google-confirm', {'code':codigo, type: tipo}, 'POST');
+      }else{
+        respuesta = await fetchSinToken(`auth/github/callback?code=${codigo}&type=${tipo}`);
+      }
       let salida= await respuesta.json();
       let body = salida.resp;
       if(body.token){
@@ -74,7 +79,14 @@ export const Login = () => {
     let resp = await fetchSinToken('auth/url-google');
     const body = await resp.json();
     localStorage.setItem('type', "login");
+    localStorage.setItem('auth', "google");
     window.location.href =body.url;
+  }
+
+  const loginGithub=()=>{
+    localStorage.setItem('type', "login");
+    localStorage.setItem('auth', "github");
+    window.location.href = `https://github.com/login/oauth/authorize?client_id=${process.env.REACT_CLIENT_ID_GIT}`
   }
 
 
@@ -113,7 +125,7 @@ export const Login = () => {
             src="https://raw.githubusercontent.com/gabgg71/authentication-app/3897732eb8c9560fc203f2586355c311a46623f6/public/Google.svg"
             alt="google"
           ></img>
-          <img
+          <img onClick={loginGithub}
             src="https://raw.githubusercontent.com/gabgg71/authentication-app/3897732eb8c9560fc203f2586355c311a46623f6/public/Gihub.svg"
             alt="github"
           ></img>

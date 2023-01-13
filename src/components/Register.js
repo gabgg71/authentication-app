@@ -24,7 +24,17 @@ export const Register = () => {
     setSearchParams(window.location.href);
     if(searchParams.get('code') !== null){
       let codigo = searchParams.get('code');
-      await fetchSinToken('auth/google-confirm', {'code':codigo, type: "register"}, 'POST');
+      let tipo = localStorage.getItem('type');
+      let auth = localStorage.getItem('auth');
+      let respuesta = undefined
+      let salida = undefined
+      if(auth === "google"){
+        await fetchSinToken('auth/google-confirm', {'code':codigo, type: "register"}, 'POST');
+      }else{
+        respuesta = await fetchSinToken(`auth/github/callback?code=${codigo}&type=${tipo}`);
+        salida= await respuesta.json();
+      }
+      
     }
   }, []);
 
@@ -43,8 +53,14 @@ export const Register = () => {
     let resp = await fetchSinToken('auth/url-google');
     const body = await resp.json();
     localStorage.setItem('type', "register");
+    localStorage.setItem('auth', "google");
     window.location.href =body.url;
+  }
 
+  const registerGithub=()=>{
+    localStorage.setItem('type', "register");
+    localStorage.setItem('auth', "github");
+    window.location.href = `https://github.com/login/oauth/authorize?client_id=${process.env.REACT_CLIENT_ID_GIT}`
   }
   
   return (
@@ -79,12 +95,12 @@ export const Register = () => {
           <button className="enter" onClick={handleRegister}>Start coding now</button>
         </form>
         <p className="grey">or continue with these social profile</p>
-        <div className="apps" onClick={registerGoogle}>
-          <img
+        <div className="apps">
+          <img onClick={registerGoogle}
             src="https://raw.githubusercontent.com/gabgg71/authentication-app/3897732eb8c9560fc203f2586355c311a46623f6/public/Google.svg"
             alt="google"
           ></img>
-          <img
+          <img onClick={registerGithub}
             src="https://raw.githubusercontent.com/gabgg71/authentication-app/3897732eb8c9560fc203f2586355c311a46623f6/public/Gihub.svg"
             alt="github"
           ></img>

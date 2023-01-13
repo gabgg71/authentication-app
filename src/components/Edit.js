@@ -71,11 +71,9 @@ export const Edit=()=>{
             //validamos 
             let respuesta = await fetchSinToken('edit/validation', {'email':user.email, password: confirmation_pass}, 'PUT');
             let resp = await respuesta.json();
-            console.log(JSON.stringify(resp))
             if(resp.correct){
                 await hazlo();
                 setConfirm(false);
-                console.log("Cambie la contrasena")
             }
         
         
