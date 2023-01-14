@@ -54,11 +54,12 @@ export const startRegister = ( email, password, name ) => {
     return async( dispatch ) => {
         const resp = await fetchSinToken( 'auth/new', { email, password, name }, 'POST' );
         const body = await resp.json();
+        console.log(`esta es la respuesta del body ${JSON.stringify(body)}`)
         if( body.ok ) {
-            dispatch( {
-                type: types.email,
-                payload: body.user.email
-            });
+            dispatch( loadDataS(
+                {email, 
+                img: process.env.REACT_APP_PREDEFINED}
+            ) )
             return dispatch( login({
                 uid: body.uid,
                 token: body.token,

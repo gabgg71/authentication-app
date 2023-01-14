@@ -6,7 +6,7 @@ import { userContext } from '../hooks/userContext';
 import {store} from '../store/store.js';
 
 export const Header = () => {
-  const { permitir, setPermitir } = useContext(userContext);
+  const { permitir, setPermitir, cambiaTema } = useContext(userContext);
   const [open, setOpen] = useState(false);
   let [user, _] = useState(store.getState().info);
   const navigate = useNavigate();
@@ -55,6 +55,9 @@ export const Header = () => {
             </button>
           </div>
         )}
+        <button className='theme' onClick={cambiaTema}><span class="material-icons">
+highlight
+</span></button>
       </div>
     </div>
   );

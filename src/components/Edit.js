@@ -43,7 +43,6 @@ export const Edit=()=>{
             userData.img = url;
             datica.img = url;
         }
-        console.log(`envio ${JSON.stringify(datica)}`)
         dispatch( setInfo (datica)).then((resp)=>{
             setImageUrl(null);
             setLoading(false);
@@ -55,14 +54,12 @@ export const Edit=()=>{
 
     const saveInfo=async()=>{
         if(password === "" || password === undefined){
-            console.log("1")
             userData.confirmation_pass = undefined;
             await hazlo({ ...userData, password: user.password});
             return ;
         }
         //case user want to stablish password but he/she was register with google
         if(password !== "" && user.password === undefined){
-            console.log("2")
             userData.confirmation_pass = undefined;
             await hazlo(userData);
             return ;
@@ -71,11 +68,9 @@ export const Edit=()=>{
             setConfirm(true);
         }
         if(confirm && confirmation_pass !== ""){
-            console.log("3")
             //validamos 
             let respuesta = await fetchSinToken('edit/validation', {'email':user.email, password: confirmation_pass}, 'PUT');
-            console.log(`la respuesta es ${respuesta.status}`)
-            if(respuesta.status === 200){
+            console.log(JSON.stringify(respuesta));
             let resp = await respuesta.json();
             if(resp.correct){
                 await hazlo(userData);
@@ -83,7 +78,6 @@ export const Edit=()=>{
             }else{
                 Swal.fire('Error', "Incorrect password", 'error');
             }
-        }
     }}
 
     //cambio de imagen     
@@ -116,8 +110,8 @@ export const Edit=()=>{
         <>
         <div className="App">
         <Header/>
-        <button onClick={()=>{navigate('/profile', { replace: true });}} className="credits back">BACK</button>
-        <div className="main-box">
+        <button onClick={()=>{navigate('/profile', { replace: true });}} className="back">BACK</button>
+        <div className="info-box">
             <b>Change Info</b>
             <p>Changes will be reflected to every service</p>
             <div className="inline">

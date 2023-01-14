@@ -16,13 +16,18 @@ export const Register = () => {
     password: "",
   });
   const [loading, setLoading] = useState(false);
-  const { setPermitir } = useContext(userContext);
+  const { setPermitir, cambiaTema } = useContext(userContext);
   const dispatch= useDispatch();
   const navigate = useNavigate();
 
   const { rEmail, rPassword } = registerData;
 
   useEffect(async() => {
+    if(localStorage.getItem('tema') === "oscuro"){
+      document.body.style.backgroundColor = "rgb(37,35,41)";
+      document.body.style.color = "#e0e0e0";
+      document.querySelector(".titulo").style.color = "#ffffff";
+    }
     setSearchParams(window.location.href);
     if(searchParams.get('code') !== null){
       let codigo = searchParams.get('code');
@@ -42,7 +47,8 @@ export const Register = () => {
 
 
 
-  const handleRegister=()=>{
+  const handleRegister=(e)=>{
+    e.preventDefault();
     dispatch(startRegister( rEmail, rPassword ) ).then((resp)=>{
       if(resp && resp.payload.token){
         setPermitir(true);
@@ -67,12 +73,15 @@ export const Register = () => {
   
   return (
     <div className="App">
+      <button className='theme' onClick={cambiaTema}><span class="material-icons">
+      highlight
+      </span></button>
       <div className="main-box">
         <img
           src="https://raw.githubusercontent.com/gabgg71/authentication-app/3897732eb8c9560fc203f2586355c311a46623f6/public/devchallenges.svg"
           className="dev" alt='alt'
         ></img>
-        <b className="join">Join thousands of learners from around the world</b>
+        <b className="join titulo">Join thousands of learners from around the world</b>
         <p>
           Master web development by making real-life projects,There are multiple
           paths for you to choose{" "}

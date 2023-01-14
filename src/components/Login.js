@@ -20,9 +20,14 @@ export const Login = () => {
   let [user, setUser] = useState(store.getState().info.name);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { setPermitir } = useContext(userContext);
+  const { setPermitir, cambiaTema } = useContext(userContext);
 
   useEffect(async() => {
+    if(localStorage.getItem('tema') === "oscuro"){
+      document.body.style.backgroundColor = "rgb(37,35,41)";
+      document.body.style.color = "#e0e0e0";
+      document.querySelector(".titulo").style.color = "#ffffff";
+    }
     setSearchParams(window.location.href);
     if(searchParams.get('code') !== null){
       setLoading(true);
@@ -95,16 +100,21 @@ export const Login = () => {
   }
 
 
+
+
  
 
   return (
     <div className="App">
+      <button className='theme' onClick={cambiaTema}><span class="material-icons">
+highlight
+</span></button>
       <div className="main-box">
         <img
           src="https://raw.githubusercontent.com/gabgg71/authentication-app/3897732eb8c9560fc203f2586355c311a46623f6/public/devchallenges.svg"
           className="dev"
         ></img>
-        <b>Login</b>
+        <b className='titulo'>Login</b>
         <form onSubmit={ handleLogin }>
           <input
             type="text"
@@ -140,6 +150,7 @@ export const Login = () => {
           Dont you have an account yet? <a href="/register">Register</a>
         </p>
       </div>
+      
       <div className="credits">
         <p className="grey">created by Gabriela Galindo</p>
         <p className="grey">devChallengues.io</p>
