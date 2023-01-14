@@ -12,17 +12,20 @@ import {store} from '../store/store.js';
 import { useNavigate } from 'react-router-dom';
 import { userContext } from '../hooks/userContext';
 import Swal from 'sweetalert2';
+import { Spin } from 'antd';
 
 
 
 export const Login = () => {
   let [user, setUser] = useState(store.getState().info.name);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { setPermitir } = useContext(userContext);
 
   useEffect(async() => {
     setSearchParams(window.location.href);
     if(searchParams.get('code') !== null){
+      setLoading(true);
       let codigo = searchParams.get('code');
       let tipo = localStorage.getItem('type');
       let respuesta = undefined
@@ -36,8 +39,10 @@ export const Login = () => {
       if(body.token){
         dispatch( startLoginGoogle( body.user, body.uid, body.token) )
         setPermitir(true);
+        setLoading(false);
         navigate('/profile');
       }else {
+        setLoading(false);
         Swal.fire('Error', body.msg || body, 'error');
     }
     }
@@ -86,7 +91,7 @@ export const Login = () => {
   const loginGithub=()=>{
     localStorage.setItem('type', "login");
     localStorage.setItem('auth', "github");
-    window.location.href = `https://github.com/login/oauth/authorize?client_id=${process.env.REACT_CLIENT_ID_GIT}`
+    window.location.href = `https://github.com/login/oauth/authorize?client_id=${process.env.REACT_APP_CLIENT_ID_GIT}`
   }
 
 
@@ -125,6 +130,7 @@ export const Login = () => {
             src="https://raw.githubusercontent.com/gabgg71/authentication-app/3897732eb8c9560fc203f2586355c311a46623f6/public/Google.svg"
             alt="google"
           ></img>
+          {loading && <Spin className="spin" size="large"/>}
           <img onClick={loginGithub}
             src="https://raw.githubusercontent.com/gabgg71/authentication-app/3897732eb8c9560fc203f2586355c311a46623f6/public/Gihub.svg"
             alt="github"

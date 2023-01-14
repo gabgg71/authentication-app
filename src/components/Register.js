@@ -1,4 +1,4 @@
-import React, {useContext, useEffect} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import { useDispatch } from 'react-redux';
 import { startRegister } from '../actions/auth';
 import { useForm } from "../hooks/useForm";
@@ -6,6 +6,7 @@ import { userContext } from '../hooks/userContext';
 import { useNavigate } from 'react-router-dom';
 import { useSearchParams } from "react-router-dom";
 import { fetchSinToken } from '../helpers/fetch';
+import { Spin } from 'antd';
 
 
 export const Register = () => {
@@ -14,6 +15,7 @@ export const Register = () => {
     email: "",
     password: "",
   });
+  const [loading, setLoading] = useState(false);
   const { setPermitir } = useContext(userContext);
   const dispatch= useDispatch();
   const navigate = useNavigate();
@@ -60,7 +62,7 @@ export const Register = () => {
   const registerGithub=()=>{
     localStorage.setItem('type', "register");
     localStorage.setItem('auth', "github");
-    window.location.href = `https://github.com/login/oauth/authorize?client_id=${process.env.REACT_CLIENT_ID_GIT}`
+    window.location.href = `https://github.com/login/oauth/authorize?client_id=${process.env.REACT_APP_CLIENT_ID_GIT}`
   }
   
   return (
@@ -100,6 +102,7 @@ export const Register = () => {
             src="https://raw.githubusercontent.com/gabgg71/authentication-app/3897732eb8c9560fc203f2586355c311a46623f6/public/Google.svg"
             alt="google"
           ></img>
+          {loading && <Spin className="spin" size="large"/>}
           <img onClick={registerGithub}
             src="https://raw.githubusercontent.com/gabgg71/authentication-app/3897732eb8c9560fc203f2586355c311a46623f6/public/Gihub.svg"
             alt="github"

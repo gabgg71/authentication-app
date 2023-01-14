@@ -7,6 +7,7 @@ import { setInfo} from '../actions/info';
 import { useNavigate } from 'react-router-dom';
 import { fetchSinToken } from '../helpers/fetch';
 import { Spin } from 'antd';
+import Swal from 'sweetalert2';
 
 export const Edit=()=>{
     let [user, setUser] = useState(store.getState().info);
@@ -23,10 +24,6 @@ export const Edit=()=>{
     const navigate = useNavigate();
     
     const {name, bio, phone, email,  password, confirmation_pass} = userData;
-  
-    /*window.addEventListener('load', (event) => {
-        dispatch( loadDataS(user) );
-    });*/
 
     store.subscribe(() => {
     setUser(
@@ -39,44 +36,54 @@ export const Edit=()=>{
         inputFile.click();
     }
 
-    const hazlo=async()=>{
+    const hazlo=async(datica)=>{
         setLoading(true);
         if(imageUrl){
             let url = await subirImagen();
             userData.img = url;
+            datica.img = url;
         }
-        dispatch( setInfo (userData)).then((resp)=>{
+        console.log(`envio ${JSON.stringify(datica)}`)
+        dispatch( setInfo (datica)).then((resp)=>{
             setImageUrl(null);
             setLoading(false);
             setSuccess(true);
+            
         });
 
     }
 
     const saveInfo=async()=>{
-        if(password === ""){
-            userData.password = user.password;
-            await hazlo();
+        if(password === "" || password === undefined){
+            console.log("1")
+            userData.confirmation_pass = undefined;
+            await hazlo({ ...userData, password: user.password});
             return ;
         }
         //case user want to stablish password but he/she was register with google
         if(password !== "" && user.password === undefined){
-            await hazlo();
+            console.log("2")
+            userData.confirmation_pass = undefined;
+            await hazlo(userData);
             return ;
         }
         if(!confirm){
             setConfirm(true);
         }
         if(confirm && confirmation_pass !== ""){
+            console.log("3")
             //validamos 
             let respuesta = await fetchSinToken('edit/validation', {'email':user.email, password: confirmation_pass}, 'PUT');
+            console.log(`la respuesta es ${respuesta.status}`)
+            if(respuesta.status === 200){
             let resp = await respuesta.json();
             if(resp.correct){
-                await hazlo();
+                await hazlo(userData);
                 setConfirm(false);
+            }else{
+                Swal.fire('Error', "Incorrect password", 'error');
             }
-        
-        
+        }
     }}
 
     //cambio de imagen     
@@ -132,8 +139,14 @@ export const Edit=()=>{
             <input type="text" className='inp-edit' placeholder="Enter your phone" name="phone"
             value={phone} onChange={handleData}></input>
             <p>Email</p>
+            {user.email &&
+            <input type="text" disabled className='inp-edit' placeholder="Enter your email" name="email"
+            value={email}></input> }
+
+            {!user.email &&
             <input type="text" className='inp-edit' placeholder="Enter your email" name="email"
-            value={email} onChange={handleData}></input>
+            value={email} onChange={handleData}></input> }
+            
             <p>Password</p>
             <input type="password" className='inp-edit' placeholder="New password" name="password" 
             value={password} onChange={handleData}></input>
