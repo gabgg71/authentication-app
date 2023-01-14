@@ -37,7 +37,7 @@ body{
   justify-content: space-between;
 }
 
-@media (max-width: 650px) {
+@media (max-width: 600px) {
   .main-box {
     width: 80vw;
     height: 44%;
@@ -46,7 +46,10 @@ body{
   .credits{
     width: 80vw !important;
   }
+
+
 }
+
 
 
 .apps{
@@ -146,7 +149,8 @@ body{
   color: #2D9CDB;
   border: none;
   background-color: transparent;
-  margin-left: 30%;
+  margin-left: 47vw;
+  padding: 0%;
 }
 
 .theme{

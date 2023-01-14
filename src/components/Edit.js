@@ -55,7 +55,7 @@ export const Edit=()=>{
     const saveInfo=async()=>{
         if(password === "" || password === undefined){
             userData.confirmation_pass = undefined;
-            await hazlo({ ...userData, password: user.password});
+            await hazlo(userData);
             return ;
         }
         //case user want to stablish password but he/she was register with google
@@ -66,11 +66,11 @@ export const Edit=()=>{
         }
         if(!confirm){
             setConfirm(true);
+            return ;
         }
         if(confirm && confirmation_pass !== ""){
             //validamos 
             let respuesta = await fetchSinToken('edit/validation', {'email':user.email, password: confirmation_pass}, 'PUT');
-            console.log(JSON.stringify(respuesta));
             let resp = await respuesta.json();
             if(resp.correct){
                 await hazlo(userData);
